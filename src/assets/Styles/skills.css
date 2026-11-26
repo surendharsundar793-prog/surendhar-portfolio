@@ -1,155 +1,187 @@
+/* ==========================================================================
+   SKILLS & TRAINING SECTION (02. Vertical Tabbed Interface)
+   ========================================================================== */
+
 .skills-section {
-  background-color: var(--bg-primary);
-  padding: 12vh 5%;
-  min-height: auto;
+  background-color: transparent;
+  padding: 100px clamp(48px, 10vw, 150px);
+  width: 100%;
   position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .skills-container {
-  max-width: 1400px;
+  max-width: 1000px;
   margin: 0 auto;
   width: 100%;
+  box-sizing: border-box;
 }
 
-/* Header */
-.skills-header {
-  margin-bottom: 6vh;
+.bc-tabs-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(24px, 4vw, 44px);
+  margin-top: 24px;
 }
 
-.skills-subtitle {
-  font-family: var(--font-heading);
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--text-secondary);
-  letter-spacing: 2px;
-  display: block;
-}
-
-.skills-main-title {
-  font-family: var(--font-heading);
-  font-size: clamp(2rem, 3.5vw, 2.5rem);
-  font-weight: 600;
-  line-height: 1.25;
-  color: #ffffff;
-  margin: 15px 0 0;
-  letter-spacing: -0.5px;
-}
-
-/* 4-Column Responsive Grid */
-.skills-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 25px;
-}
-
-.skill-card-wrapper {
-  width: 100%;
-}
-
-/* Elevated glassmorphism cards with uniform height */
-.skill-card {
-  background: rgba(22, 27, 34, 0.4);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 28px;
-  height: 100%;
+/* Left Vertical Tab Rail */
+.bc-tab-list {
   display: flex;
   flex-direction: column;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
-              border-color 0.4s ease, 
-              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), 
-              inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  min-width: 195px;
+  border-left: 2px solid rgba(126, 163, 139, 0.18);
+  flex-shrink: 0;
 }
 
-.skill-card:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-6px);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.55);
+.bc-tab-btn {
+  position: relative;
+  background: transparent;
+  border: none;
+  border-left: 2px solid transparent;
+  margin-left: -2px;
+  padding: 13px 18px;
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: var(--fz-xs, 13px);
+  color: var(--text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.22s ease;
 }
 
-/* Header inside Card */
-.skill-card-header {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding-bottom: 16px;
+.bc-tab-btn:hover {
+  background: rgba(21, 29, 24, 0.7);
+  color: var(--accent);
 }
 
-.skill-card-icon-wrap {
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  width: 38px;
-  height: 38px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.skill-card:hover .skill-card-icon-wrap {
-  background: #ffffff;
-  color: var(--bg-primary);
-}
-
-.skill-card-title {
-  font-family: var(--font-heading);
-  font-size: 1.05rem;
+.bc-tab-btn.active {
+  color: var(--accent);
+  background: rgba(21, 29, 24, 0.85);
+  border-left-color: var(--accent);
   font-weight: 600;
-  color: #ffffff;
-  letter-spacing: -0.2px;
 }
 
-.skill-card-body {
+/* Right Tab Panel */
+.bc-tab-panel {
   flex: 1;
+  min-height: 260px;
 }
 
-/* Badge list container */
-.skills-badges-wrap {
+.bc-panel-title {
+  font-family: var(--font-sans);
+  font-size: clamp(18px, 1.5vw, 20px);
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--text-primary);
+  margin: 0 0 4px;
+}
+
+.bc-panel-meta {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--accent);
+  margin: 0 0 18px;
+}
+
+.bc-panel-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.bc-panel-bullets li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-family: var(--font-sans);
+  font-size: clamp(14.5px, 1.1vw, 16px);
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.bc-panel-bullets .bc-bullet {
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.bc-panel-badges {
   display: flex;
   flex-wrap: wrap;
+  gap: 10px;
+}
+
+.bc-tech-pill {
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
-}
-
-/* Premium elevated skill badge */
-.skill-badge {
-  font-family: var(--font-body);
-  font-size: 0.82rem;
-  color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  padding: 6px 12px;
+  padding: 7px 12px;
+  background: rgba(21, 29, 24, 0.8);
+  border: 1px solid rgba(126, 163, 139, 0.22);
   border-radius: 6px;
-  transition: all 0.3s ease;
+  font-family: var(--font-heading);
+  font-size: 11px;
+  color: var(--text-primary);
+  transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
-.skill-badge:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
+.bc-tech-pill:hover {
+  border-color: var(--accent);
   transform: translateY(-2px);
 }
 
-/* Responsive Grid layouts */
-@media (max-width: 1100px) {
-  .skills-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+@media (max-width: 1080px) {
+  .skills-section {
+    padding: 90px 80px;
   }
 }
 
-@media (max-width: 650px) {
-  .skills-grid {
-    grid-template-columns: 1fr;
+@media (max-width: 768px) {
+  .skills-section {
+    padding: 80px 44px;
+  }
+
+  .bc-tabs-layout {
+    flex-direction: column;
     gap: 20px;
   }
-  .skill-card {
-    padding: 20px;
+
+  .bc-tab-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    width: 100%;
+    overflow: visible;
+    border-left: none;
+    border-bottom: none;
+  }
+
+  .bc-tab-btn {
+    border-left: none;
+    border: 1px solid rgba(126, 163, 139, 0.2);
+    border-radius: 6px;
+    margin-left: 0;
+    margin-bottom: 0;
+    padding: 10px 12px;
+    text-align: center;
+    white-space: normal;
+    font-size: 11.5px;
+  }
+
+  .bc-tab-btn.active {
+    border-color: var(--accent);
+    background: rgba(126, 163, 139, 0.14);
+  }
+}
+
+@media (max-width: 480px) {
+  .skills-section {
+    padding: 60px 25px;
   }
 }

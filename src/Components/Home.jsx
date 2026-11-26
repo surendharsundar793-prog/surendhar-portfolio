@@ -1,79 +1,71 @@
 import React from 'react'
 import '../assets/Styles/home.css'
-import resume from '../assets/surendhar-resume.pdf'
-import profile from '../assets/profile.jpeg'
+import { ArrowRight } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { Download, Send } from 'lucide-react'
+import RisingInk from './RisingInk'
 
 const Home = () => {
-  const handleRedirect = (e, type, url) => {
-    e.preventDefault();
-    window.dispatchEvent(new CustomEvent('trigger-redirect', { 
-      detail: { type, url } 
-    }));
+  const handleScrollTo = (id) => {
+    const el = document.querySelector(id);
+    if (el) {
+      if (window.lenis) {
+        window.lenis.scrollTo(el, { offset: -70 });
+      } else {
+        const top = el.getBoundingClientRect().top + window.scrollY - 70;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    }
   };
 
   return (
-    <div className="home-terminal-section">
-      <div className="home-terminal-container">
-        
-        <div className="hero-shell">
-          <div className="terminal-window hero-window">
-            <div className="window-topbar">
-              <div className="window-controls"></div>
-              <div className="window-title">bash — terminal_hero</div>
-            </div>
-            <div className="window-content hero-content-shell" data-lenis-prevent>
-               <div className="shell-lines">
-                  <div className="shell-cmd terminal-line-1">› INTRO</div>
-                  <div className="shell-output terminal-line-2">NAME: Surendhar S</div>
-                  <div className="shell-output terminal-line-3">LOC:  Salem, India</div>
-                  <div className="shell-cmd terminal-line-4">› What I Do</div>
-                  <div className="shell-output terminal-line-5">
-                    Building clean, efficient applications with a focus on performance and architectural excellence.
-                  </div>
-                  <div className="shell-cursor terminal-line-6">
-                     <span>›</span> <span className="blinking-box"></span>
-                  </div>
-               </div>
-            </div>
-          </div>
+    <div className="home-hero-section">
+      <div className="home-hero-container">
+        <motion.div
+          className="home-hero-text"
+          initial={{ opacity: 0, y: 22 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <p className="home-overline">Hi, my name is</p>
 
-          <div className="hero-actions">
-            <motion.a 
-              href="mailto:surendharsunadr793@gmail.com" 
-              onClick={(e) => handleRedirect(e, 'contact', 'mailto:surendharsunadr793@gmail.com')}
-              className="terminal-btn primary-btn cursor-target"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 2.0 }}
+          <h1 className="home-hero-name">
+            <RisingInk
+              text="Surendhar S"
+              as="span"
+              color="#FFFFFF"
+              near="#B19EEF"
+              far="#3A1DB8"
+              plates={7}
+              lift={0.50}
+              radius={1.40}
+              angle={35}
+              stiffness={1.00}
+              damping={0.50}
+              pop={1.00}
+              shadow={0.60}
+              intro={true}
+              className="rising-ink-name"
+            />
+          </h1>
+
+          <h2 className="home-hero-subheadline">
+            I build things for the cloud &amp; web
+          </h2>
+
+          <p className="home-hero-bio">
+            I’m an engineering graduate specializing in DevOps, Cloud Infrastructure, and Java Full-Stack development—focused on automating CI/CD pipelines, containerizing resilient deployments, and building scalable <span className="home-bio-accent">AWS &amp; Spring Boot</span> applications.
+          </p>
+
+          <div className="home-hero-actions">
+            <button
+              className="home-btn-outline cursor-target"
+              onClick={() => handleScrollTo('#project')}
             >
-              HIRE ME <Send size={14} />
-            </motion.a>
-            <motion.button 
-              onClick={(e) => handleRedirect(e, 'resume', resume)}
-              className="terminal-btn secondary-btn cursor-target"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 2.2 }}
-            >
-              RESUME <Download size={14} />
-            </motion.button>
+              <span>Check out my work</span>
+              <ArrowRight size={16} className="btn-arrow-icon" />
+            </button>
           </div>
-        </div>
-
-        <div className="hero-visual">
-          <motion.div 
-            className="profile-terminal-frame"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1 }}
-          >
-            <div className="scanner-line"></div>
-            <img src={profile} alt="Surendhar" className="technical-profile-img" />
-          </motion.div>
-        </div>
-
+        </motion.div>
       </div>
     </div>
   )

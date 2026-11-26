@@ -1,81 +1,73 @@
 import React from 'react'
 import '../assets/Styles/about.css'
-import profilePic from '../assets/profile.jpeg'
-import AnimatedContent from './AnimatedContent'
-import ScrollReveal from './ScrollReveal'
+import profileImg from '../assets/img.webp'
+import { motion } from 'framer-motion'
+
+const coreTechs = [
+  'AWS (EC2, EKS, VPC, IAM)',
+  'Docker & Kubernetes',
+  'Jenkins & GitHub Actions',
+  'Terraform & Ansible',
+  'Java & Spring Boot',
+  'React.js & PostgreSQL',
+];
 
 const About = () => {
   return (
-    <section className="about-section">
+    <div className="about-section">
       <div className="about-container">
-        
-        <div className="about-content-split">
-          
-          <AnimatedContent 
-            distance={80} 
-            direction="horizontal" 
-            reverse 
-            duration={1.2} 
-            ease="power3.out" 
-            threshold={0.15} 
-            once 
-            className="about-visual-left"
-          >
-            <div className="about-image-wrapper">
-              <div className="about-image-glow"></div>
-              <img src={profilePic} alt="Surendhar S" className="about-image" />
+        <motion.div
+          className="about-description-wrapper"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
+          {/* Numbered Editorial Heading */}
+          <h2 className="bc-section-heading">
+            <span className="bc-section-num">01.</span>
+            <span>About Me</span>
+          </h2>
+
+          <div className="bc-about-inner">
+            <div className="about-body">
+              <p>
+                Hi there! <strong> I am Surendhar S</strong>, a beginner  <strong>DevOps &amp; Cloud Engineer</strong> and <strong>Java Full-Stack Developer</strong>. I love connecting Backend application development to automated cloud infrastructure..
+              </p>
+              <p>
+                My hands-on exposure spans building end-to-end full-stack web platforms, automating CI/CD delivery pipelines, provisioning cloud infrastructure, and setting up shift-left security, Blue-Green zero-downtime deployments, and real-time observability. I also actively incorporate AI-assisted workflows for faster prototyping, pipeline debugging, and infrastructure drafting.
+              </p>
+
+              <p className="about-tech-intro">
+                Here are a few technologies I’ve been working with recently:
+              </p>
+
+              <ul className="about-tech-list">
+                {coreTechs.map((tech) => (
+                  <li key={tech}>
+                    <span className="bc-bullet" aria-hidden="true">▹</span>
+                    <span>{tech}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </AnimatedContent>
 
-          <div className="about-description-right">
-            <AnimatedContent distance={40} duration={1} ease="power3.out" threshold={0.15} once>
-              <h2 className="about-headline">
-                <ScrollReveal
-                  start="top 85%"
-                  end="top 50%"
-                  textClassName="about-headline-reveal"
-                >
-                  Bridging Application Engineering and Infrastructure Automation.
-                </ScrollReveal>
-              </h2>
-            </AnimatedContent>
-
-            <AnimatedContent distance={30} duration={1} delay={0.2} ease="power3.out" threshold={0.15} once className="about-body">
-              <p>
-                I approach software development with a deep focus on clean architecture, performance optimization, and robust systems engineering. I bridge the gap between high-fidelity frontends and secure, automated backend infrastructures.
-              </p>
-              <p>
-                My passion lies in building scalable web platforms and automating their pipelines to deliver reliable, production-ready systems. From coding RESTful services to configuring DevOps build stages, I ensure every line of code is optimized for scale.
-              </p>
-            </AnimatedContent>
-
-            <AnimatedContent distance={30} duration={1} delay={0.4} ease="power3.out" threshold={0.15} once className="about-metrics-grid">
-              <div className="metric-box">
-                <span className="metric-label">CURRENT LOC:</span>
-                <span className="metric-value">Bangalore, IN</span>
+            {/* Right Column: Brittany-style Duotone Square Portrait with Offset Border */}
+            <div className="bc-about-pic">
+              <div className="bc-about-pic-wrapper cursor-target">
+                <img
+                  src={profileImg}
+                  alt="Surendhar S"
+                  className="bc-about-img"
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
-              <div className="metric-box">
-                <span className="metric-label">PHILOSOPHY:</span>
-                <span className="metric-value">Keep learning. Technology never stops evolving.</span>
-              </div>
-              <div className="metric-box">
-                <span className="metric-label">STATUS:</span>
-                <span className="metric-value">Available Immediately</span>
-              </div>
-              <div className="metric-box">
-                <span className="metric-label">WORK_STYLE:</span>
-                <span className="metric-value"> Onsite / Hybrid / Remote</span>
-              </div>
-              <div className="metric-box full-width-metric">
-                <span className="metric-label">QUALIFICATION:</span>
-                <span className="metric-value">B.E. in Electronics and Communication Engineering — Adhiyamaan College of Engineering</span>
-              </div>
-            </AnimatedContent>
+            </div>
           </div>
-
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </div>
   )
 }
 
