@@ -1,74 +1,50 @@
-import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import '../../assets/Styles/navbar.css'
-import { X, User, Briefcase, Cpu, Send, Menu, Home, Terminal } from 'lucide-react'
+import React, { useState, useEffect } from 'react';
+import '../../assets/Styles/navbar.css';
+import resumePdf from '../../assets/surendhar-resume.pdf';
 
 const navLinks = [
-  // { name: 'HOME',    id: '#home',    icon: <Home size={16} /> },
-  { name: 'ABOUT',   id: '#about',   icon: <User size={16} /> },
-  { name: 'STACK',   id: '#skills',  icon: <Cpu size={16} /> },
-  { name: 'PROJECTS', id: '#project', icon: <Briefcase size={16} /> },
-  { name: 'CONTACT',  id: '#contact', icon: <Send size={16} /> }
+  { num: '01.', name: 'About', id: '#about' },
+  { num: '02.', name: 'Skills', id: '#skills' },
+  { num: '03.', name: 'Projects', id: '#project' },
+  { num: '04.', name: 'Contact', id: '#contact' },
 ];
 
 const Navbar = () => {
-  const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState('#home');
-  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
+    let lastScrollY = window.scrollY;
+
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      const currentY = window.scrollY;
+      setScrolled(currentY > 30);
 
-      // Scroll progress calculation
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0;
-      setScrollProgress(progress);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-
-    const handleTrigger = (e) => {
-      const { type, url, customTitle, customMsg } = e.detail;
-      triggerRedirect(type, url, customTitle, customMsg);
-    };
-    window.addEventListener('trigger-redirect', handleTrigger);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('trigger-redirect', handleTrigger);
-    };
-  }, []);
-
-  const triggerRedirect = (type, url, customTitle, customMsg) => {
-    setOpen(false);
-    if (type === 'shutdown' || type === 'gateway') {
-      window.location.href = '/';
-      return;
-    }
-
-    if (url.startsWith('#')) {
-      const el = document.querySelector(url);
-      if (el) {
-        const offset = (window.innerWidth > 1024 ? 0 : 80);
-        if (window.lenis) {
-          window.lenis.scrollTo(el, { offset: -offset });
-        } else {
-          const top = el.getBoundingClientRect().top + window.scrollY - offset;
-          window.scrollTo({ top, behavior: 'smooth' });
-        }
+      if (currentY > 100 && currentY > lastScrollY && !menuOpen) {
+        setHidden(true);
+      } else {
+        setHidden(false);
       }
-    } else if (url) {
-      window.open(url, '_blank');
-    }
-  };
+      lastScrollY = currentY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [menuOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setMenuOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const scrollToSection = (e, id) => {
     e.preventDefault();
-    setOpen(false);
-    setActiveSection(id);
-    
+    setMenuOpen(false);
+
     if (id === '#home') {
       if (window.lenis) {
         window.lenis.scrollTo(0);
@@ -80,11 +56,10 @@ const Navbar = () => {
 
     const el = document.querySelector(id);
     if (el) {
-      const offset = (window.innerWidth > 1024 ? 0 : 80);
       if (window.lenis) {
-        window.lenis.scrollTo(el, { offset: -offset });
+        window.lenis.scrollTo(el, { offset: -70 });
       } else {
-        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+        const top = el.getBoundingClientRect().top + window.scrollY - 70;
         window.scrollTo({ top, behavior: 'smooth' });
       }
     }
@@ -92,81 +67,118 @@ const Navbar = () => {
 
   return (
     <>
-
-      {/* Brand Logo - Top Left */}
-      <motion.a 
-        href="/" 
-        className="sidebar-brand cursor-target" 
-        onClick={(e) => scrollToSection(e, '#home')}
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.5, duration: 0.8 }}
-      >
-        SURENDHAR<span>:~$</span>
-      </motion.a>
-      
-      {/* Status Dot HUD - Top Right */}
-      <motion.div 
-        className="status-indicator"
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.7, duration: 0.8 }}
-      >
-        <span className="status-dot"></span>
-        <span className="status-text">ONLINE</span>
-      </motion.div>
-
-      {/* Innovative Desktop Sidebar */}
-      <motion.aside 
-        className="desktop-sidebar"
-        initial={{ x: -150, opacity: 0, y: '-50%' }}
-        animate={{ x: 0, opacity: 1, y: '-50%' }}
-        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <nav className="sidebar-nav">
-          {navLinks.map((link) => {
-            const isActive = activeSection === link.id;
-            return (
-              <a 
-                key={link.name}
-                href={link.id} 
-                className={`sidebar-link cursor-target ${isActive ? 'active' : ''}`}
-                onClick={(e) => scrollToSection(e, link.id)}
+      <header className={`bc-navbar ${scrolled ? 'scrolled' : ''} ${hidden ? 'hidden' : ''}`}>
+        <nav className="bc-nav-inner" aria-label="Primary Navigation">
+          {/* Hexagonal 'S' Monogram Logo */}
+          <a
+            href="#home"
+            className="bc-logo cursor-target"
+            onClick={(e) => scrollToSection(e, '#home')}
+            aria-label="Home"
+          >
+            <svg width="38" height="38" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+              <polygon
+                points="50,5 93,28 93,72 50,95 7,72 7,28"
+                stroke="currentColor"
+                strokeWidth="5"
+                fill="rgba(126, 163, 139, 0.06)"
+              />
+              <text
+                x="50"
+                y="62"
+                textAnchor="middle"
+                fill="currentColor"
+                fontSize="42"
+                fontWeight="700"
+                fontFamily="Roboto Mono, monospace"
               >
-                <div className="link-icon">{link.icon}</div>
-                <span className="link-label">{link.name}</span>
-              </a>
-            );
-          })}
-        </nav>
-      </motion.aside>
+                S
+              </text>
+            </svg>
+          </a>
 
-      {/* Mobile Top Bar */}
-      <div className={`mobile-top-bar ${scrolled ? 'scrolled' : ''}`}>
-        <a href="/" className="mobile-brand cursor-target" onClick={(e) => scrollToSection(e, '#home')}>
-          SURENDHAR<span>:~$</span>
-        </a>
-      </div>
+          {/* Desktop Links */}
+          <div className="bc-nav-links">
+            <ol className="bc-nav-list">
+              {navLinks.map((item) => (
+                <li key={item.id}>
+                  <a
+                    href={item.id}
+                    className="bc-nav-link cursor-target"
+                    onClick={(e) => scrollToSection(e, item.id)}
+                  >
+                    <span className="bc-nav-num">{item.num}</span>
+                    <span>{item.name}</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
 
-      {/* Mobile Bottom Navigation Bar */}
-      <div className="mobile-bottom-nav">
-        {navLinks.map((link) => {
-          const isActive = activeSection === link.id;
-          return (
-            <a 
-              key={link.name}
-              href={link.id}
-              className={`mobile-bottom-link cursor-target ${isActive ? 'active' : ''}`}
-              onClick={(e) => scrollToSection(e, link.id)}
+            <a
+              href={resumePdf}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bc-resume-btn cursor-target"
             >
-              <span className="mobile-bottom-icon">{link.icon}</span>
-              {isActive && <span className="mobile-bottom-label">{link.name}</span>}
+              Resume
             </a>
-          );
-        })}
-      </div>
-    </>
-  )
-}
+          </div>
 
-export default Navbar
+          {/* Mobile Asymmetric Hamburger Button */}
+          <button
+            className={`bc-hamburger-btn cursor-target ${menuOpen ? 'open' : ''}`}
+            onClick={() => setMenuOpen((prev) => !prev)}
+            aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={menuOpen}
+          >
+            <span className="bc-ham-box">
+              <span className="bc-ham-inner" />
+            </span>
+          </button>
+        </nav>
+      </header>
+
+      {/* Mobile Blurred Backdrop */}
+      <div
+        className={`bc-mobile-backdrop ${menuOpen ? 'open' : ''}`}
+        onClick={() => setMenuOpen(false)}
+        aria-hidden="true"
+      />
+
+      {/* Mobile Right Slide-In Drawer */}
+      <aside
+        className={`bc-mobile-aside ${menuOpen ? 'open' : ''}`}
+        aria-hidden={!menuOpen}
+      >
+        <nav className="bc-mobile-aside-nav">
+          <ol className="bc-mobile-list">
+            {navLinks.map((item) => (
+              <li key={item.id}>
+                <a
+                  href={item.id}
+                  className="bc-mobile-link"
+                  onClick={(e) => scrollToSection(e, item.id)}
+                >
+                  <span className="bc-mobile-num">{item.num}</span>
+                  <span className="bc-mobile-label">{item.name}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+
+          <a
+            href={resumePdf}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bc-resume-btn bc-mobile-resume"
+            onClick={() => setMenuOpen(false)}
+          >
+            Resume
+          </a>
+        </nav>
+      </aside>
+    </>
+  );
+};
+
+export default Navbar;

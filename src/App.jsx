@@ -1,16 +1,18 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, lazy, Suspense } from 'react'
 import './App.css'
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 
 import Home from './Components/Home'
-import About from './Components/About'
-import Skills from './Components/Skills'
 import Navbar from './Components/Navbar/Navbar'
-import Project from './Components/Project'
-import Contact from './Components/Contact'
-import Footer from './Components/Footer/Footer'
+import ClickSpark from './Components/ClickSpark'
 
-import { ToastContainer } from 'react-toastify'
+const About = lazy(() => import('./Components/About'))
+const Skills = lazy(() => import('./Components/Skills'))
+const Project = lazy(() => import('./Components/Project'))
+const Contact = lazy(() => import('./Components/Contact'))
+const Footer = lazy(() => import('./Components/Footer/Footer'))
+const Particles = lazy(() => import('./Components/Particles'))
+
 import Lenis from 'lenis'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -26,7 +28,7 @@ function ScrollToSection() {
       const el = document.querySelector(location.hash)
       if (el) {
         setTimeout(() => {
-          const offset = 80
+          const offset = 60
           if (window.lenis) {
             window.lenis.scrollTo(el, { offset: -offset })
           } else {
@@ -44,10 +46,10 @@ function ScrollToSection() {
 
 // Updates browser tab title as user scrolls between sections
 const sectionTitles = {
-  home:    'Surendhar | Portfolio',
+  home:    'Surendhar',
   project: 'Surendhar | Projects',
-  about:   'Surendhar | About',
   skills:  'Surendhar | Skills',
+  about:   'Surendhar | About',
   contact: 'Surendhar | Contact',
 }
 
@@ -65,7 +67,7 @@ function SectionTitleUpdater() {
           }
         });
       },
-      { threshold: 0.4 }
+      { threshold: 0.35 }
     );
     sections.forEach(s => observer.observe(s));
     return () => observer.disconnect();
@@ -75,6 +77,11 @@ function SectionTitleUpdater() {
 }
 
 function App() {
+  useEffect(() => {
+    // Dark mode only enforcement
+    document.documentElement.setAttribute('data-theme', 'dark');
+    localStorage.setItem('theme', 'dark');
+  }, []);
 
   useEffect(() => {
     // Always start at top on load/refresh
@@ -83,10 +90,10 @@ function App() {
     }
     window.scrollTo(0, 0)
 
-    // Lenis smooth scroll
+    // Lenis smooth scroll for natural page flow
     const lenis = new Lenis({
-      lerp: 0.05,
-      duration: 1.5,
+      lerp: 0.08,
+      duration: 1.2,
       smoothTouch: true
     })
     window.lenis = lenis
@@ -94,68 +101,79 @@ function App() {
     lenis.scrollTo(0, { immediate: true })
     lenis.on('scroll', ScrollTrigger.update)
 
-    gsap.ticker.add((time) => {
+    const raf = (time) => {
       lenis.raf(time * 1000)
-    })
+    }
+    gsap.ticker.add(raf)
     gsap.ticker.lagSmoothing(0)
 
-    // Global scroll fade-in
-    let observer;
-    const fadeEls = document.querySelectorAll('.scroll-fade')
-    
-    observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('in-view')
-          } else {
-            entry.target.classList.remove('in-view')
-          }
-        })
-      },
-      { threshold: 0.1 } // Increased threshold slightly for better trigger
-    )
-    
-    fadeEls.forEach(el => observer.observe(el))
-
     return () => {
-      if (observer) observer.disconnect()
       lenis.destroy()
       window.lenis = null
-      gsap.ticker.remove((time) => { lenis.raf(time * 1000) })
+      gsap.ticker.remove(raf)
     }
   }, [])
 
   return (
-    <>
-      <ToastContainer />
+    <ClickSpark
+      sparkColor={['#5B7564', '#7EA38B', '#F9F6F1', '#E8C547']}
+      sparkSize={12}
+      sparkRadius={26}
+      sparkCount={8}
+      duration={450}
+    >
+      {/* React Bits Particles Background - Active in Dark Mode Only */}
+      <div className="dark-particles-wrapper" aria-hidden="true">
+        <Suspense fallback={null}>
+          <Particles
+            particleCount={120}
+            particleSpread={10}
+            speed={0.12}
+            particleColors={['#F9F6F1', '#7EA38B', '#5B7564', '#E8C547']}
+            moveParticlesOnHover={true}
+            particleHoverFactor={0.8}
+            alphaParticles={true}
+            particleBaseSize={85}
+            sizeRandomness={1.1}
+            cameraDistance={20}
+            glow={0.6}
+            twinkle={0.4}
+            clickBurst={false}
+            opacity={0.85}
+            paused={false}
+          />
+        </Suspense>
+      </div>
+
       <ScrollToSection />
       <SectionTitleUpdater />
       <Routes>
         <Route path="/" element={
           <div className="port">
             <Navbar />
-            <section id="home">
+            <section id="home" className="portfolio-section">
               <Home />
             </section>
-            <section id="project">
-              <Project />
-            </section>
-            <section id="skills" className="scroll-fade">
-              <Skills />
-            </section>
-            <section id="about" className="scroll-fade">
-              <About />
-            </section>
-            <section id="contact" className="scroll-fade">
-              <Contact />
-            </section>
-            <Footer />
+            <Suspense fallback={null}>
+              <section id="about" className="portfolio-section">
+                <About />
+              </section>
+              <section id="skills" className="portfolio-section">
+                <Skills />
+              </section>
+              <section id="project" className="portfolio-section">
+                <Project />
+              </section>
+              <section id="contact" className="portfolio-section">
+                <Contact />
+              </section>
+              <Footer />
+            </Suspense>
           </div>
         } />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </>
+    </ClickSpark>
   )
 }
 

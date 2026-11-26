@@ -9,9 +9,9 @@ html, body {
     max-width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
-    overflow-x: hidden !important;
+    overflow-x: clip !important;
     position: relative;
-    background-color: var(--bg-primary);
+    background-color: var(--bg-surface);
 }
 
 html {
@@ -19,26 +19,93 @@ html {
 }
 
 :root {
-    --bg-primary: #0d1117;
-    --bg-secondary: #000000;
-    --bg-light: #121212;
-    --text-primary: #c9d1d9;
-    --text-secondary: #8b949e;
-    --text-dark: #000000;
-    --accent: #56d364;
-    --white: #ffffff;
+    --bg-primary: #0D110F;
+    --bg-secondary: #141A16;
+    --bg-surface: #0D110F;
+    --bg-card: #151D18;
+    --bg-muted: #1B241F;
+    --text-primary: #F9F6F1;
+    --text-secondary: #A3B5A9;
+    --text-muted: #73867A;
+    --text-dark: #F9F6F1;
+    --accent: #7EA38B;
+    --accent-hover: #98BEA6;
+    --accent-subtle: rgba(126, 163, 139, 0.16);
+    --accent-border: rgba(126, 163, 139, 0.32);
+    --border-subtle: rgba(126, 163, 139, 0.2);
+    --border-hover: rgba(126, 163, 139, 0.48);
+    --white: #151D18;
     
-    --font-heading: 'Roboto Mono', monospace;
-    --font-body: 'Roboto Mono', monospace;
+    --font-sans: 'Calibre', 'Inter', 'San Francisco', 'SF Pro Text', -apple-system, system-ui, sans-serif;
+    --font-mono: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
+    --font-heading: var(--font-mono);
+    --font-body: var(--font-sans);
+
+    --fz-xxs: 12px;
+    --fz-xs: 13px;
+    --fz-sm: 14px;
+    --fz-md: 16px;
+    --fz-lg: 18px;
+    --fz-xl: 20px;
+    --fz-xxl: 22px;
+    --fz-heading: 32px;
+}
+
+[data-theme="dark"] {
+    --bg-primary: #0D110F;
+    --bg-secondary: #141A16;
+    --bg-surface: #0D110F;
+    --bg-card: #151D18;
+    --bg-muted: #1B241F;
+    --text-primary: #F9F6F1;
+    --text-secondary: #A3B5A9;
+    --text-muted: #73867A;
+    --text-dark: #F9F6F1;
+    --accent: #7EA38B;
+    --accent-hover: #98BEA6;
+    --accent-subtle: rgba(126, 163, 139, 0.16);
+    --accent-border: rgba(126, 163, 139, 0.32);
+    --border-subtle: rgba(126, 163, 139, 0.2);
+    --border-hover: rgba(126, 163, 139, 0.48);
+    --white: #151D18;
+}
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2:not(.home-hero-subheadline),
+[data-theme="dark"] h3,
+[data-theme="dark"] .home-greeting-text,
+[data-theme="dark"] .home-hero-headline,
+[data-theme="dark"] .projects-main-title,
+[data-theme="dark"] .project-duo-title,
+[data-theme="dark"] .skills-main-title,
+[data-theme="dark"] .tech-label,
+[data-theme="dark"] .about-main-title,
+[data-theme="dark"] .about-lead,
+[data-theme="dark"] .contact-main-title,
+[data-theme="dark"] .channel-card-value,
+[data-theme="dark"] .status-text,
+[data-theme="dark"] .coded-by {
+    color: #F9F6F1 !important;
+}
+
+[data-theme="dark"] .project-duo-desc,
+[data-theme="dark"] .about-body,
+[data-theme="dark"] .home-hero-bio,
+[data-theme="dark"] .contact-desc {
+    color: #B4C4B9;
+}
+
+body, .portfolio-section, .minimal-footer {
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body {
     margin: 0;
     padding: 0;
     font-family: var(--font-body);
-    background-color: var(--bg-primary);
+    background-color: var(--bg-surface);
     color: var(--text-primary);
-    overflow-x: hidden;
+    overflow-x: clip !important;
     width: 100%;
     position: relative;
     -webkit-font-smoothing: antialiased;
@@ -51,28 +118,10 @@ body::after {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-  background-size: 100% 4px;
+  background: radial-gradient(circle at 50% 0%, rgba(91, 117, 100, 0.03) 0%, transparent 70%);
   pointer-events: none;
   z-index: 10000;
-  opacity: 0.15;
-}
-
-.prompt {
-    color: var(--text-primary);
-    opacity: 0.8;
-    vertical-align: middle;
-    margin-right: 15px;
-    letter-spacing: normal;
-}
-
-.prompt::after {
-    content: "_";
-    animation: blink 1s step-end infinite;
-}
-
-@keyframes blink {
-    50% { opacity: 0; }
+  opacity: 0.8;
 }
 
 #root, .port {
@@ -80,8 +129,29 @@ body::after {
     max-width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
-    overflow-x: hidden !important;
+    overflow-x: clip !important;
     display: block;
+    position: relative;
+    z-index: 1;
+}
+
+/* React Bits Particles Background - Dark Mode Only */
+.dark-particles-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+[data-theme="dark"] .dark-particles-wrapper {
+  opacity: 1;
+  visibility: visible;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -105,34 +175,35 @@ ul {
     margin: 0;
 }
 
-.scroll-fade {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1),
-                transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-    will-change: opacity, transform;
-}
-
-.scroll-fade.in-view {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-a, 
-button, 
-.cursor-target, 
-.sidebar-link, 
-.sidebar-brand, 
-.mobile-brand, 
-.mobile-toggle,
-.mobile-dropdown-link {
+a,
+button,
+.cursor-target {
     cursor: grab !important;
 }
 
-a:active, 
-button:active, 
-.cursor-target:active,
-.sidebar-link:active,
-.sidebar-brand:active {
+a:active,
+button:active,
+.cursor-target:active {
     cursor: grabbing !important;
+}
+
+/* ==========================================================================
+   PORTFOLIO SECTIONS (UNIFIED MERGED LAYOUT - NO DIVIDING LINES)
+   ========================================================================== */
+.portfolio-section {
+  width: 100%;
+  position: relative;
+  box-sizing: border-box;
+  clear: both;
+  background-color: transparent;
+  border-top: none;
+}
+
+#home.portfolio-section,
+#project.portfolio-section,
+#skills.portfolio-section,
+#about.portfolio-section,
+#contact.portfolio-section {
+  background-color: transparent;
+  border-top: none;
 }
